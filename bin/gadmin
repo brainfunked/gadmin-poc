@@ -1,0 +1,16 @@
+#!/usr/bin/env ruby
+# vim: ft=ruby
+
+require 'tty-reader'
+
+puts "*** gadmin ***"
+puts "Press ctrl+x to exit."
+
+reader = TTY::Reader.new
+
+reader.on(:keyctrl_x) { puts "Exiting.."; exit }
+
+loop do
+  line = reader.read_line('=> ')
+  puts line
+end
