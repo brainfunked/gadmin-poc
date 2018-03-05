@@ -1,16 +1,22 @@
 #!/usr/bin/env ruby
 # vim: ft=ruby
 
+libdir = File.expand_path(File.dirname(__FILE__)).sub('bin', 'lib')
+Dir.exists?(libdir) && $LOAD_PATH.unshift(libdir)
+
 require 'tty-reader'
+require 'gadmin'
 
 puts "*** gadmin ***"
-puts "Press ctrl+x to exit."
+puts "%% Press ctrl+x to exit."
 
-reader = TTY::Reader.new
+reader    = TTY::Reader.new
+gadmin    = Gadmin::Session.new
 
 reader.on(:keyctrl_x) { puts "Exiting.."; exit }
 
 loop do
   line = reader.read_line('=> ')
-  puts line
+  gadmin.command line
+  gadmin.execute!
 end
