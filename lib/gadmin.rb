@@ -11,5 +11,9 @@ module Gadmin
     def register(cmd, klass)
       @commands[cmd.to_sym] = klass
     end
+
+    def command_list
+      @commands.keys.join ", "
+    end
   end
 end

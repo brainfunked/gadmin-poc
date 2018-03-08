@@ -1,9 +1,12 @@
+require 'gadmin/commands'
+
 module Gadmin
   module Commands
-    class Help
-      def self.register!(registry)
-        registry.register :help, self
-        puts "%% Registered command 'help'"
+    class Help < Gadmin::Command
+      class << self
+        def help(command, subcommand = nil)
+          $gadmin.help
+        end
       end
     end
   end

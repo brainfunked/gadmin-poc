@@ -11,12 +11,12 @@ puts "*** gadmin ***"
 puts "%% Press ctrl+x to exit."
 
 reader    = TTY::Reader.new
-gadmin    = Gadmin::Session.new
+$gadmin    = Gadmin::Session.new
 
 reader.on(:keyctrl_x) { puts "Exiting.."; exit }
 
 loop do
   line = reader.read_line('=> ')
-  gadmin.command line
-  gadmin.execute!
+  $gadmin.command line
+  $gadmin.execute!
 end
