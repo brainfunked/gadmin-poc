@@ -18,5 +18,5 @@ reader.on(:keyctrl_x) { puts "Exiting.."; exit }
 loop do
   line = reader.read_line('=> ')
   $gadmin.command line
-  $gadmin.execute!
+  $gadmin.execute
 end

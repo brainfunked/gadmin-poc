@@ -2,18 +2,50 @@ require 'slop'
 
 module Gadmin
   class SubCommand
-    attr_reader :args, :options, :parser
+    class ValidationError < ::SyntaxError; end
 
-    def initialize(args = [])
-      @options = Slop::Options.new
-      define_options
-      @parser = Slop::Parser.new @options
+    attr_reader :subcommand, :args, :options, :parser_options, :parser
 
-      @args = @parser.parse(args) if args
+    def initialize(subcommand, args = [])
+      @subcommand     = subcommand
+      @args           = args
+      @parser_options = Slop::Options.new
+      @parser_options.bool '-h', '--help', 'Print this help text.', default: false
+      define_parser_options
+      @parser         = Slop::Parser.new @parser_options
+    end
+
+    def execute
+      parse!
+      if help?
+        help
+        return
+      end
+      validate!
+    rescue Slop::UnknownOption => e
+      puts "Invalid option for subcommand '#{subcommand}': #{e.flag}"
+      puts
+      help
+    rescue Gadmin::SubCommand::ValidationError => e
+      puts "Invalid input for subcommand '#{subcommand}': #{e.message}"
+      puts
+      help
+    end
+
+    def parse!
+      @options = @parser.parse @args
+    end
+
+    def help?
+      if @options
+        return true if @options.arguments.include? 'help' or @options.help?
+      end
+
+      false
     end
 
     def help
-      puts @options
+      puts @parser_options
     end
   end
 end

@@ -4,7 +4,7 @@ module Gadmin
   module Commands
     class Help < Gadmin::Command
       class << self
-        def help(command, subcommand = nil)
+        def banner(command)
           $gadmin.help
         end
       end
