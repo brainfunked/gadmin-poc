@@ -1,6 +1,7 @@
 require 'gadmin/cluster_group'
 require 'gadmin/commands'
 require 'gadmin/commands/help'
+require 'gadmin/commands/cluster'
 
 module Gadmin
   class Session
