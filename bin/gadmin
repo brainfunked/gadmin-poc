@@ -5,19 +5,18 @@ libdir = File.expand_path(File.dirname(__FILE__)).sub('bin', 'lib')
 Dir.exists?(libdir) && $LOAD_PATH.unshift(libdir)
 
 require 'tty-reader'
-require 'gadmin'
+require 'gadmin/session'
 
 puts "*** gadmin ***"
 puts "%% Press ctrl+x to exit."
 
 reader  = TTY::Reader.new
+reader.on(:keyctrl_x) { puts "Exiting.."; exit }
+
 workdir = File.expand_path(File.join(File.dirname(File.expand_path(__FILE__)), '../work'))
 $gadmin = Gadmin::Session.new(workdir).start!
 
-reader.on(:keyctrl_x) { puts "Exiting.."; exit }
-
 loop do
-  line = reader.read_line('=> ')
-  $gadmin.command line
-  $gadmin.execute
+  line = reader.read_line("#{$gadmin.cluster.name} > ")
+  $gadmin.prep(line).execute
 end

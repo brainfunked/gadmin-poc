@@ -1,5 +1,3 @@
-require 'gadmin/session'
-
 module Gadmin
   class Registry
     attr_reader :commands

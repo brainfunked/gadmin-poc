@@ -1,8 +1,14 @@
 require 'gadmin/cluster'
+
+require 'forwardable'
 require 'yaml'
 
 module Gadmin
   class ClusterGroup
+    extend Forwardable
+
+    def_delegator :@clusters, :[]
+
     attr_reader :inventory_file, :clusters
 
     def initialize(inventory_file)

@@ -1,15 +1,32 @@
-require 'gadmin/session/command'
+require 'gadmin'
 
 require 'gadmin/cluster_group'
+
+require 'gadmin/session/command'
+
 require 'gadmin/commands'
 require 'gadmin/commands/help'
 require 'gadmin/commands/cluster'
 
+require 'singleton'
+require 'forwardable'
+
+require 'tty-prompt'
+
 module Gadmin
   class Session
+    class Store
+      include Singleton
+
+      attr_accessor :cluster, :command
+    end
+
+    extend Forwardable
+
+    def_delegators :@current, :cluster, :command
+
     attr_reader :workdir, :ansible_inventory
     attr_reader :clusters, :registry
-    attr_reader :cmd_line, :current
 
     def initialize(workdir)
       @workdir = workdir
@@ -21,12 +38,21 @@ module Gadmin
       commands = Gadmin::Commands.constants.select { |c| Gadmin::Commands.const_get(c).is_a? Class }
       commands.each { |c| Gadmin::Commands.const_get(c).register!(@registry) }
 
+      @current = Store.instance
+
       @started = false
     end
 
     def start!
       return if started?
+
       @clusters.load_clusters
+      if @clusters.list.empty?
+        puts "No clusters defined, please define one using `cluster define`"
+        return
+      end
+
+      select_cluster
       started!
 
       self
@@ -35,13 +61,14 @@ module Gadmin
       puts "\t#{e.backtrace.join("\n\t")}"
     end
 
-    def command(cmd_line)
-      @current = Gadmin::Session::Command.new(cmd_line, @registry)
+    def prep(cmd_line)
+      @current.command = Gadmin::Session::Command.new(cmd_line, @registry)
+      self
     end
 
     def execute
       catch :helptext do
-        @current.parse!.execute!
+        @current.command.parse!.execute!
       end
       reset!
     rescue Command::NameError
@@ -58,6 +85,11 @@ module Gadmin
       @started
     end
 
+    def select_cluster
+      selection = TTY::Prompt.new.select "Select cluster:", @clusters.list
+      @current.cluster = @clusters[selection]
+    end
+
     private
 
     def started!
@@ -65,7 +97,7 @@ module Gadmin
     end
 
     def reset!
-      @current = nil
+      @current.command = nil
     end
   end
 end
