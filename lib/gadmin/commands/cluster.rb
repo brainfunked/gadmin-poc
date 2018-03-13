@@ -19,6 +19,24 @@ module Gadmin
           @parser_options
         end
       end
+
+      class List < Gadmin::SubCommand
+        def execute
+          super
+
+          puts "Error: Session not started!" unless $gadmin.started?
+
+          puts "Loaded clusters:"
+          puts "\t- #{$gadmin.clusters.list.join("\n\t- ")}"
+        end
+
+        private
+
+        def define_parser_options
+          @parser_options.banner = 'Usage: cluster list'
+          @parser_options
+        end
+      end
     end
   end
 end

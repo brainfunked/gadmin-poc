@@ -37,6 +37,10 @@ module Gadmin
       @loaded
     end
 
+    def list
+      @clusters.keys
+    end
+
     private
 
     def loaded!
