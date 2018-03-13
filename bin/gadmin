@@ -10,8 +10,9 @@ require 'gadmin'
 puts "*** gadmin ***"
 puts "%% Press ctrl+x to exit."
 
-reader    = TTY::Reader.new
-$gadmin    = Gadmin::Session.new
+reader  = TTY::Reader.new
+workdir = File.expand_path(File.join(File.dirname(File.expand_path(__FILE__)), '..'))
+$gadmin = Gadmin::Session.new(workdir).start!
 
 reader.on(:keyctrl_x) { puts "Exiting.."; exit }
 
