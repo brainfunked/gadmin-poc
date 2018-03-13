@@ -40,7 +40,9 @@ module Gadmin
     end
 
     def execute
-      @current.parse!.execute!
+      catch :helptext do
+        @current.parse!.execute!
+      end
       reset!
     rescue Command::NameError
       puts "Invalid command '#{@current.command}'"
@@ -49,7 +51,7 @@ module Gadmin
 
     def help
       puts "Available commands: #{@registry.command_list}."
-      puts "Type `<command> help` for help on individual commands."
+      puts "Type `<command> --help` for help on individual commands."
     end
 
     def started?

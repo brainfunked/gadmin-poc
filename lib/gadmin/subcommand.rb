@@ -19,7 +19,7 @@ module Gadmin
       parse!
       if help?
         help
-        return
+        throw :helptext
       end
       validate!
     rescue Slop::UnknownOption => e
@@ -32,6 +32,19 @@ module Gadmin
       help
     end
 
+    def help
+      puts @parser_options
+    end
+
+    private
+
+    def define_parser_options
+      @parser_options
+    end
+
+    def validate!
+    end
+
     def parse!
       @options = @parser.parse @args
     end
@@ -42,10 +55,6 @@ module Gadmin
       end
 
       false
-    end
-
-    def help
-      puts @parser_options
     end
   end
 end

@@ -4,10 +4,6 @@ module Gadmin
   module Commands
     class Cluster < Gadmin::Command
       class Define < Gadmin::SubCommand
-        def execute
-          super
-        end
-
         private
 
         def validate!

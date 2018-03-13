@@ -31,7 +31,7 @@ module Gadmin
         subcommands = constants.select { |c| const_get(c).is_a? Class }
         subcommands_str = subcommands.collect { |s| s.to_s.split('::')[-1].downcase }
         puts "'#{command}' subcommands: #{subcommands_str.join(', ')}."
-        puts "Type `#{command} <subcommand> help` for help on individual subcommands."
+        puts "Type `#{command} <subcommand> --help` for help on individual subcommands."
       end
     end
   end
