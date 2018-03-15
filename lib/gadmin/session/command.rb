@@ -14,7 +14,11 @@ module Gadmin
 
       def execute!
         #puts "%% Executing '#{@command}': subcommand '#{@subcommand}' with arguments '#{@args}'."
-        @klass.execute @command, @subcommand, @args
+        catch :executed do
+          catch :helptext do
+            @klass.execute @command, @subcommand, @args
+          end
+        end
       end
 
       def parse!

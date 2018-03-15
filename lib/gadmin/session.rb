@@ -53,7 +53,7 @@ module Gadmin
       end
 
       select_cluster
-      started!
+      started! if cluster_selected?
 
       self
     rescue Exception => e
@@ -67,9 +67,13 @@ module Gadmin
     end
 
     def execute
-      catch :helptext do
-        @current.command.parse!.execute!
+      selection_triggered = catch :select_cluster do
+        new_cluster = catch :cluster_added do
+          @current.command.parse!.execute!
+        end
+        @clusters.add new_cluster if new_cluster
       end
+      select_cluster if selection_triggered == true
       reset!
     rescue Command::NameError
       puts "Invalid command '#{@current.command}'"
@@ -88,6 +92,10 @@ module Gadmin
     def select_cluster
       selection = TTY::Prompt.new.select "Select cluster:", @clusters.list
       @current.cluster = @clusters[selection]
+    end
+
+    def cluster_selected?
+      @current.cluster.is_a? Gadmin::Cluster
     end
 
     def cluster_exists?(name)

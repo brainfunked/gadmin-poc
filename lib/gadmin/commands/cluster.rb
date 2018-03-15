@@ -77,9 +77,9 @@ module Gadmin
         end
 
         def define_parser_options
-          @parser_options.banner = 'Usage: cluster define --peers <192.168.1.1,192.168.1.2,..>'
+          @parser_options.banner = 'Define a new cluster and load it.' + "\nUsage: cluster define --peers <192.168.1.1,192.168.1.2,..>"
           @parser_options.separator ''
-          @parser_options.string '--name', 'Name for the cluster.'
+          @parser_options.string '--name', 'Unique name for the cluster.'
           @parser_options.array '--peers', 'Comma delimited list of peers (no spaces).'
           @parser_options.array '--smb', "Comma delimited list of smb hosts (no spaces). smb hosts don't need to be peers."
           @parser_options.string '--monitoring', "Monitoring host. Doesn't need to be a peer."
@@ -88,11 +88,7 @@ module Gadmin
       end
 
       class List < Gadmin::SubCommand
-        def execute
-          super
-
-          puts "Error: Session not started!" unless $gadmin.started?
-
+        def execute!
           puts "Loaded clusters:"
           puts "\t- #{$gadmin.clusters.list.join("\n\t- ")}"
         end
@@ -100,7 +96,20 @@ module Gadmin
         private
 
         def define_parser_options
-          @parser_options.banner = 'Usage: cluster list'
+          @parser_options.banner = 'List loaded clusters.' + "\nUsage: cluster list"
+          @parser_options
+        end
+      end
+
+      class Select < Gadmin::SubCommand
+        def execute!
+          throw :select_cluster, true
+        end
+
+        private
+
+        def define_parser_options
+          @parser_options.banner = 'Select a cluster to operate upon from the list of loaded clusters.' + "\nUsage: cluster select"
           @parser_options
         end
       end

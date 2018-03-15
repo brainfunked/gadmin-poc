@@ -23,8 +23,7 @@ module Gadmin
           return
         end
 
-        obj = klass.new(subcommand, args)
-        puts obj.execute
+        klass.new(subcommand, args).execute
       end
 
       def banner(command)
