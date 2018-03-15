@@ -30,7 +30,7 @@ module Gadmin
 
     def initialize(workdir)
       @workdir = workdir
-      @ansible_inventory = File.join workdir, 'ansible', 'hosts.yml'
+      @ansible_inventory = File.join workdir, 'ansible', 'inventory'
 
       @clusters = Gadmin::ClusterGroup.new @ansible_inventory
 

@@ -9,10 +9,15 @@ module Gadmin
 
     def_delegator :@clusters, :[]
 
-    attr_reader :inventory_file, :clusters
+    attr_reader :inventory_files, :clusters
 
-    def initialize(inventory_file)
-      @inventory_file = inventory_file
+    def initialize(inventory)
+      @inventory_files = []
+      Dir.foreach(inventory) do |file|
+        file_path = File.expand_path(File.join(inventory, file))
+        @inventory_files.push(file_path) unless Dir.exist?(file_path)
+      end
+
       @clusters = {}
 
       @loaded = false
@@ -20,17 +25,20 @@ module Gadmin
 
     def load_clusters
       return if loaded?
-      inventory = YAML.load_file(@inventory_file)['all']['children']['gadmin']['children']
-      inventory.each do |name, data|
-        begin
-          @clusters[name] = Gadmin::Cluster.new(name, data).load_cluster
 
-          puts "%% Loaded cluster '#{name}'"
-        rescue Gadmin::Cluster::NoPeersInInventory => e
-          puts e.message
-        rescue => e
-          puts "Something went wrong when loading cluster '#{name}': #{e.message}"
-          puts "\t#{e.backtrace.join("\n\t")}"
+      @inventory_files.each do |file|
+        inventory = YAML.load_file(file)['all']['children']['gadmin']['children']
+        inventory.each do |name, data|
+          begin
+            @clusters[name] = Gadmin::Cluster.new(name, data).load_cluster
+
+            puts "%% Loaded cluster '#{name}'"
+          rescue Gadmin::Cluster::NoPeersInInventory => e
+            puts e.message
+          rescue => e
+            puts "Something went wrong when loading cluster '#{name}': #{e.message}"
+            puts "\t#{e.backtrace.join("\n\t")}"
+          end
         end
       end
 
