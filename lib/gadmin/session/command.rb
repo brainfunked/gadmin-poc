@@ -17,6 +17,7 @@ module Gadmin
         catch :executed do
           catch :helptext do
             subcommand = @klass.subcommand_for @command, @subcommand, @args
+            return unless subcommand
 
             if subcommand.requires_session? and not $gadmin.cluster
               puts "No cluster loaded. Run `cluster define`."
