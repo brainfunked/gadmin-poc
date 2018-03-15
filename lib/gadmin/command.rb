@@ -7,7 +7,7 @@ module Gadmin
         puts "%% Registered command '#{command}'"
       end
 
-      def execute(command, subcommand = nil, args = [])
+      def subcommand_for(command, subcommand = nil, args = [])
         if subcommand.nil? \
             or [ :help, '--help'.to_sym, '-h'.to_sym ].include? subcommand
           banner command
@@ -23,7 +23,7 @@ module Gadmin
           return
         end
 
-        klass.new(subcommand, args).execute
+        klass.new subcommand, args
       end
 
       def banner(command)

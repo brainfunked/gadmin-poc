@@ -49,7 +49,7 @@ module Gadmin
       @clusters.load_clusters
       if @clusters.list.empty?
         puts "No clusters defined, please define one using `cluster define`"
-        return
+        return self
       end
 
       select_cluster
@@ -72,6 +72,7 @@ module Gadmin
           @current.command.parse!.execute!
         end
         @clusters.add new_cluster if new_cluster
+        throw :select_cluster, true if @clusters.count == 1
       end
       select_cluster if selection_triggered == true
       reset!
@@ -90,8 +91,11 @@ module Gadmin
     end
 
     def select_cluster
-      selection = TTY::Prompt.new.select "Select cluster:", @clusters.list
+      selection = @clusters.count == 1 ? @clusters.list.first : TTY::Prompt.new.select("Select cluster:", @clusters.list)
+      puts "Selecting cluster '#{selection}'"
       @current.cluster = @clusters[selection]
+
+      started!
     end
 
     def cluster_selected?

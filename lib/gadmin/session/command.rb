@@ -16,9 +16,18 @@ module Gadmin
         #puts "%% Executing '#{@command}': subcommand '#{@subcommand}' with arguments '#{@args}'."
         catch :executed do
           catch :helptext do
-            @klass.execute @command, @subcommand, @args
+            subcommand = @klass.subcommand_for @command, @subcommand, @args
+
+            if subcommand.requires_session? and not $gadmin.cluster
+              puts "No cluster loaded. Run `cluster define`."
+              return
+            end
+
+            subcommand.execute
           end
         end
+
+        nil
       end
 
       def parse!

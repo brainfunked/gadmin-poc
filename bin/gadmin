@@ -17,6 +17,7 @@ workdir = File.expand_path(File.join(File.dirname(File.expand_path(__FILE__)), '
 $gadmin = Gadmin::Session.new(workdir).start!
 
 loop do
-  line = reader.read_line("#{$gadmin.cluster.name} > ")
+  prompt = $gadmin.cluster ? "#{$gadmin.cluster.name} > ": "> "
+  line = reader.read_line prompt
   $gadmin.prep(line).execute
 end

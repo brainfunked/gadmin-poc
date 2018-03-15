@@ -13,6 +13,8 @@ module Gadmin
       @parser_options.bool '-h', '--help', 'Print this help text.', default: false
       define_parser_options
       @parser         = Slop::Parser.new @parser_options
+
+      @requires_session = false
     end
 
     def execute
@@ -38,6 +40,10 @@ module Gadmin
       puts @parser_options
     end
 
+    def requires_session?
+      @requires_session
+    end
+
     private
 
     def define_parser_options
@@ -57,6 +63,10 @@ module Gadmin
       end
 
       false
+    end
+
+    def requires_session!
+      @requires_session = true
     end
   end
 end

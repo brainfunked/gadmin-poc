@@ -45,6 +45,10 @@ module Gadmin
       @clusters.keys
     end
 
+    def count
+      @clusters.count
+    end
+
     def named?(name)
       @clusters.keys.include? name
     end

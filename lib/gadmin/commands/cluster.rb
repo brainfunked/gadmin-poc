@@ -88,6 +88,11 @@ module Gadmin
       end
 
       class List < Gadmin::SubCommand
+        def initialize(subcommand, args = [])
+          super
+          requires_session!
+        end
+
         def execute!
           puts "Loaded clusters:"
           puts "\t- #{$gadmin.clusters.list.join("\n\t- ")}"
@@ -102,6 +107,11 @@ module Gadmin
       end
 
       class Select < Gadmin::SubCommand
+        def initialize(subcommand, args = [])
+          super
+          requires_session!
+        end
+
         def execute!
           throw :select_cluster, true
         end
