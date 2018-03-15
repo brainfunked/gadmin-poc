@@ -55,6 +55,10 @@ module Gadmin
       @clusters.keys
     end
 
+    def named?(name)
+      @clusters.keys.include? name
+    end
+
     private
 
     def loaded!

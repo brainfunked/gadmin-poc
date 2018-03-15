@@ -22,6 +22,8 @@ module Gadmin
         throw :helptext
       end
       validate!
+      execute!
+      throw :executed
     rescue Slop::UnknownOption => e
       puts "Invalid option for subcommand '#{subcommand}': #{e.flag}"
       puts

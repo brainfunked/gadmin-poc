@@ -90,6 +90,10 @@ module Gadmin
       @current.cluster = @clusters[selection]
     end
 
+    def cluster_exists?(name)
+      @clusters.named? name
+    end
+
     private
 
     def started!
